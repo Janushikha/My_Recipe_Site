@@ -1,7 +1,5 @@
-const SUPABASE_PROJECT_URL = "https://tntbdasgrqvtcrpfwjgd.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRudGJkYXNncnF2dGNycGZ3amdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNTAzNjYsImV4cCI6MjA4OTkyNjM2Nn0.LgqLlC2kb4gaLRkuoU4-Uze5YjJQTvsFmbKdrzf9PEQ";
-
 let recipes = [];
+const API_BASE_URL = window.location.protocol === "file:" ? "http://localhost:3000" : "";
 
 function normalizeRecipe(row, index) {
 	const normalizedIngredients = Array.isArray(row.ingredients)
@@ -26,22 +24,20 @@ function normalizeRecipe(row, index) {
 	};
 }
 
-async function loadRecipesFromSupabase() {
+async function loadRecipesFromApi() {
 	if (!recipesGrid) return;
 
 	recipesGrid.innerHTML = "<p class=\"no-results\">Loading recipes...</p>";
 
 	try {
-		const response = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/Recipes?select=*`, {
+		const response = await fetch(`${API_BASE_URL}/api/recipes`, {
 			headers: {
-				apikey: SUPABASE_ANON_KEY,
-				Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
 				Accept: "application/json"
 			}
 		});
 
 		if (!response.ok) {
-			throw new Error(`Supabase request failed: ${response.status}`);
+			throw new Error(`API request failed: ${response.status}`);
 		}
 
 		const data = await response.json();
@@ -49,8 +45,8 @@ async function loadRecipesFromSupabase() {
 		populateCategoryOptions();
 		renderRecipes(recipes);
 	} catch (error) {
-		console.error("Failed to fetch recipes from Supabase:", error);
-		recipesGrid.innerHTML = "<p class=\"no-results\">Could not load recipes from Supabase. Check your Project URL and Anon Key.</p>";
+		console.error("Failed to fetch recipes from backend API:", error);
+		recipesGrid.innerHTML = "<p class=\"no-results\">Could not load recipes from API. Make sure your server is running.</p>";
 	}
 }
 
@@ -179,4 +175,4 @@ document.addEventListener("keydown", (event) => {
 	}
 });
 
-loadRecipesFromSupabase();
+loadRecipesFromApi();
