@@ -61,6 +61,12 @@
 			line-height: 1.15;
 		}
 
+		.controls {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
+
 		.category-picker {
 			display: flex;
 			align-items: center;
@@ -69,6 +75,25 @@
 			border: 1px solid #f0c7a7;
 			border-radius: 999px;
 			padding: 0.45rem 0.9rem;
+		}
+
+		#recipeSearch {
+			font: inherit;
+			color: var(--ink);
+			border: 1px solid #f0c7a7;
+			background: #fff3e0;
+			padding: 0.65rem 0.9rem;
+			border-radius: 10px;
+			outline: none;
+			transition: border-color 180ms ease;
+		}
+
+		#recipeSearch::placeholder {
+			color: #a68968;
+		}
+
+		#recipeSearch:focus {
+			border-color: var(--accent);
 		}
 
 		.category-picker label {
@@ -273,19 +298,22 @@
 	<div class="container">
 		<header class="hero">
 			<h1>Janu’s Culinary Collection</h1>
-			<div class="category-picker">
-				<label for="category">Category</label>
-				<select id="category" name="category">
-					<option value="All">All</option>
-					<option>Breakfast</option>
-					<option>Lunch</option>
-					<option>Dinner</option>
-					<option>Dessert</option>
-					<option>Baking</option>
-					<option>Frying</option>
-					<option>Sweet</option>
-					<option>Spicy</option>
-				</select>
+			<div class="controls">
+				<div class="category-picker">
+					<label for="category">Category</label>
+					<select id="category" name="category">
+						<option value="All">All</option>
+						<option>Breakfast</option>
+						<option>Lunch</option>
+						<option>Dinner</option>
+						<option>Dessert</option>
+						<option>Baking</option>
+						<option>Frying</option>
+						<option>Sweet</option>
+						<option>Spicy</option>
+					</select>
+				</div>
+				<input type="text" id="recipeSearch" placeholder="Search by name or ingredients...">
 			</div>
 		</header>
 

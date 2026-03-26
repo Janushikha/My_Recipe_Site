@@ -51,6 +51,7 @@ async function loadRecipesFromApi() {
 }
 
 const categorySelect = document.getElementById("category");
+const recipeSearch = document.getElementById("recipeSearch");
 const recipesGrid = document.getElementById("recipesGrid");
 const recipeModal = document.getElementById("recipeModal");
 const closeModalButton = document.getElementById("closeModal");
@@ -94,6 +95,37 @@ function filterRecipesByCategory(recipeList, selectedCategory) {
 		}
 		return recipe.category === selectedCategory;
 	});
+}
+
+function handleSearch() {
+	const selectedCategory = categorySelect.value;
+	const searchTerm = recipeSearch.value.toLowerCase();
+
+	const filteredRecipes = recipes.filter((recipe) => {
+		// Check category match
+		let categoryMatch = true;
+		if (selectedCategory !== "All") {
+			if (Array.isArray(recipe.categories)) {
+				categoryMatch = recipe.categories.includes(selectedCategory);
+			} else {
+				categoryMatch = recipe.category === selectedCategory;
+			}
+		}
+
+		// Check search term match in name or ingredients
+		let searchMatch = true;
+		if (searchTerm) {
+			const nameMatch = recipe.name.toLowerCase().includes(searchTerm);
+			const ingredientsMatch = recipe.ingredients.some((ingredient) =>
+				ingredient.toLowerCase().includes(searchTerm)
+			);
+			searchMatch = nameMatch || ingredientsMatch;
+		}
+
+		return categoryMatch && searchMatch;
+	});
+
+	renderRecipes(filteredRecipes);
 }
 
 function renderRecipes(recipeList) {
@@ -142,10 +174,9 @@ function hideRecipeModal() {
 	recipeModal.setAttribute("aria-hidden", "true");
 }
 
-categorySelect.addEventListener("change", (event) => {
-	const filteredRecipes = filterRecipesByCategory(recipes, event.target.value);
-	renderRecipes(filteredRecipes);
-});
+categorySelect.addEventListener("change", handleSearch);
+
+recipeSearch.addEventListener("input", handleSearch);
 
 recipesGrid.addEventListener("click", (event) => {
 	const card = event.target.closest(".recipe-card");
