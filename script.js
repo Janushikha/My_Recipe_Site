@@ -97,6 +97,17 @@ function filterRecipesByCategory(recipeList, selectedCategory) {
 	});
 }
 
+function debounce(func, delay) {
+	let timeoutId;
+
+	return function (...args) {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => {
+			func.apply(this, args);
+		}, delay);
+	};
+}
+
 function handleSearch() {
 	const selectedCategory = categorySelect.value;
 	const searchTerm = recipeSearch.value.toLowerCase();
@@ -127,6 +138,8 @@ function handleSearch() {
 
 	renderRecipes(filteredRecipes);
 }
+
+const debouncedHandleSearch = debounce(handleSearch, 300);
 
 function renderRecipes(recipeList) {
 	if (recipeList.length === 0) {
@@ -176,7 +189,7 @@ function hideRecipeModal() {
 
 categorySelect.addEventListener("change", handleSearch);
 
-recipeSearch.addEventListener("input", handleSearch);
+recipeSearch.addEventListener("input", debouncedHandleSearch);
 
 recipesGrid.addEventListener("click", (event) => {
 	const card = event.target.closest(".recipe-card");
