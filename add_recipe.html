@@ -77,7 +77,8 @@
 		}
 
 		#recipe-form input,
-		#recipe-form textarea {
+		#recipe-form textarea,
+		#recipe-form select {
 			width: 100%;
 			font: inherit;
 			color: var(--ink);
@@ -96,9 +97,71 @@
 		}
 
 		#recipe-form input:focus,
-		#recipe-form textarea:focus {
+		#recipe-form textarea:focus,
+		#recipe-form select:focus {
 			border-color: var(--accent);
 			box-shadow: 0 0 0 3px rgba(217, 109, 48, 0.15);
+		}
+
+		#recipe-form select {
+			cursor: pointer;
+		}
+
+		.category-checkboxes {
+			grid-column: 1 / -1;
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 0.6rem;
+			max-width: 320px;
+		}
+
+		.checkbox-item {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			gap: 0.5rem;
+		}
+
+		.checkbox-item input[type="checkbox"] {
+			width: 20px;
+			height: 20px;
+			cursor: pointer;
+			accent-color: var(--accent);
+		}
+
+		.checkbox-item label {
+			cursor: pointer;
+			margin: 0;
+			font-weight: 600;
+			font-size: 0.95rem;
+			align-self: center;
+		}
+
+		.selected-categories {
+			grid-column: 1 / -1;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+			margin-top: 0.6rem;
+			padding: 0.6rem;
+			background: #ffe8d1;
+			border-radius: 10px;
+		}
+
+		.category-tag {
+			display: inline-flex;
+			align-items: center;
+			background: var(--accent);
+			color: #fff;
+			padding: 0.4rem 0.8rem;
+			border-radius: 20px;
+			font-size: 0.85rem;
+			font-weight: 600;
+		}
+
+		.category-tag::before {
+			content: "✓ ";
+			margin-right: 0.3rem;
 		}
 
 		#recipe-form label[for="recipe-ingredients"],
@@ -152,8 +215,42 @@
 				<label for="recipe-name">Name</label>
 				<input type="text" id="recipe-name" name="name" required>
 
-				<label for="recipe-category">Category</label>
-				<input type="text" id="recipe-category" name="category" required>
+				<label>Category</label>
+				<div class="category-checkboxes" id="category-checkboxes">
+					<div class="checkbox-item">
+						<input type="checkbox" id="cat-breakfast" name="category" value="Breakfast">
+						<label for="cat-breakfast">Breakfast</label>
+					</div>
+					<div class="checkbox-item">
+						<input type="checkbox" id="cat-lunch" name="category" value="Lunch">
+						<label for="cat-lunch">Lunch</label>
+					</div>
+					<div class="checkbox-item">
+						<input type="checkbox" id="cat-dinner" name="category" value="Dinner">
+						<label for="cat-dinner">Dinner</label>
+					</div>
+					<div class="checkbox-item">
+						<input type="checkbox" id="cat-dessert" name="category" value="Dessert">
+						<label for="cat-dessert">Dessert</label>
+					</div>
+					<div class="checkbox-item">
+						<input type="checkbox" id="cat-baking" name="category" value="Baking">
+						<label for="cat-baking">Baking</label>
+					</div>
+					<div class="checkbox-item">
+						<input type="checkbox" id="cat-frying" name="category" value="Frying">
+						<label for="cat-frying">Frying</label>
+					</div>
+					<div class="checkbox-item">
+						<input type="checkbox" id="cat-sweet" name="category" value="Sweet">
+						<label for="cat-sweet">Sweet</label>
+					</div>
+					<div class="checkbox-item">
+						<input type="checkbox" id="cat-spicy" name="category" value="Spicy">
+						<label for="cat-spicy">Spicy</label>
+					</div>
+				</div>
+				<div class="selected-categories" id="selected-categories"></div>
 
 				<label for="recipe-image-url">Image URL</label>
 				<input type="text" id="recipe-image-url" name="imageUrl" required>
@@ -172,6 +269,6 @@
 		</section>
 	</main>
 
-	<script src="add-recipe.js"></script>
+	<script src="add_recipe.js"></script>
 </body>
 </html>

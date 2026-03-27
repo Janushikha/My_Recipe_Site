@@ -1,4 +1,31 @@
 const recipeForm = document.getElementById("recipe-form");
+const categoryCheckboxes = document.querySelectorAll("input[name='category']");
+const selectedCategoriesDisplay = document.getElementById("selected-categories");
+
+// Function to update the selected categories display
+function updateCategoryDisplay() {
+	if (!selectedCategoriesDisplay) return;
+	
+	const checkedBoxes = Array.from(categoryCheckboxes).filter((checkbox) => checkbox.checked);
+	selectedCategoriesDisplay.innerHTML = "";
+
+	if (checkedBoxes.length > 0) {
+		checkedBoxes.forEach((checkbox) => {
+			const tag = document.createElement("div");
+			tag.className = "category-tag";
+			tag.textContent = checkbox.value;
+			selectedCategoriesDisplay.appendChild(tag);
+		});
+	}
+}
+
+// Update display when checkbox changes
+categoryCheckboxes.forEach((checkbox) => {
+	checkbox.addEventListener("change", updateCategoryDisplay);
+});
+
+// Initialize display on page load
+document.addEventListener("DOMContentLoaded", updateCategoryDisplay);
 
 if (recipeForm) {
 	recipeForm.addEventListener("submit", async (event) => {
@@ -11,10 +38,14 @@ if (recipeForm) {
 			.map((item) => item.trim())
 			.filter(Boolean);
 
+		const categories = Array.from(categoryCheckboxes)
+			.filter((checkbox) => checkbox.checked)
+			.map((checkbox) => checkbox.value);
+
 		const recipe = {
 			id: `rec-${Date.now()}`,
 			name: (formData.get("name") || "").toString().trim(),
-			category: (formData.get("category") || "").toString().trim(),
+			category: categories,
 			imageUrl: (formData.get("imageUrl") || "").toString().trim(),
 			altText: (formData.get("altText") || "").toString().trim(),
 			ingredients,
