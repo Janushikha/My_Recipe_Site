@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Add New Recipe</title>
+	<link rel="stylesheet" href="styles.css">
+	<style>
+		:root {
+			--surface: #fffdf8;
+			--ink: #2d2017;
+			--accent: #d96d30;
+			--accent-2: #ffb347;
+			--border: #f2d9c6;
+			--shadow: 0 12px 28px rgba(91, 50, 22, 0.14);
+			--radius: 18px;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			min-height: 100vh;
+			margin: 0;
+			font-family: "Manrope", sans-serif;
+			color: var(--ink);
+			background:
+				radial-gradient(circle at 15% 20%, #ffd7ab 0%, transparent 35%),
+				radial-gradient(circle at 80% 10%, #ffe8c8 0%, transparent 30%),
+				linear-gradient(135deg, #fff8ef 0%, #fff2df 55%, #ffe9d2 100%);
+			padding: 2rem 1rem 3rem;
+		}
+
+		main {
+			width: min(860px, 100%);
+			margin: 0 auto;
+		}
+
+		.back-link {
+			display: inline-flex;
+			align-items: center;
+			text-decoration: none;
+			color: #4d2d1a;
+			font-weight: 700;
+			margin-bottom: 1rem;
+			padding: 0.5rem 0.8rem;
+			border-radius: 999px;
+			background: #ffe8d1;
+			border: 1px solid #f2c7a3;
+		}
+
+		#admin-panel {
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			box-shadow: var(--shadow);
+			padding: clamp(1rem, 2.4vw, 1.5rem);
+		}
+
+		#admin-panel h1 {
+			font-family: "Playfair Display", serif;
+			font-size: clamp(1.4rem, 3.2vw, 2rem);
+			margin: 0 0 0.9rem;
+		}
+
+		#recipe-form {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 0.8rem 0.9rem;
+		}
+
+		#recipe-form label {
+			font-weight: 700;
+			font-size: 0.92rem;
+			align-self: end;
+		}
+
+		#recipe-form input,
+		#recipe-form textarea {
+			width: 100%;
+			font: inherit;
+			color: var(--ink);
+			background: #fff9f0;
+			border: 1px solid #efcfb7;
+			border-radius: 10px;
+			padding: 0.68rem 0.8rem;
+			outline: none;
+			transition: border-color 180ms ease, box-shadow 180ms ease;
+		}
+
+		#recipe-form textarea {
+			resize: vertical;
+			line-height: 1.45;
+			min-height: 7rem;
+		}
+
+		#recipe-form input:focus,
+		#recipe-form textarea:focus {
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(217, 109, 48, 0.15);
+		}
+
+		#recipe-form label[for="recipe-ingredients"],
+		#recipe-form textarea#recipe-ingredients,
+		#recipe-form label[for="recipe-instructions"],
+		#recipe-form textarea#recipe-instructions,
+		#recipe-form button {
+			grid-column: 1 / -1;
+		}
+
+		#recipe-form button {
+			justify-self: start;
+			border: none;
+			border-radius: 10px;
+			padding: 0.72rem 1.15rem;
+			font: inherit;
+			font-weight: 700;
+			color: #fff;
+			background: linear-gradient(120deg, var(--accent), var(--accent-2));
+			cursor: pointer;
+			transition: transform 180ms ease, box-shadow 180ms ease;
+		}
+
+		#recipe-form button:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 9px 18px rgba(217, 109, 48, 0.35);
+		}
+
+		#recipe-form button:active {
+			transform: translateY(0);
+		}
+
+		@media (max-width: 640px) {
+			#recipe-form {
+				grid-template-columns: 1fr;
+			}
+
+			#recipe-form button {
+				width: 100%;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<a class="back-link" href="index.html">Back to Home</a>
+
+		<section id="admin-panel" aria-label="Add recipe panel">
+			<h1>Add New Recipe</h1>
+			<form id="recipe-form">
+				<label for="recipe-name">Name</label>
+				<input type="text" id="recipe-name" name="name" required>
+
+				<label for="recipe-category">Category</label>
+				<input type="text" id="recipe-category" name="category" required>
+
+				<label for="recipe-image-url">Image URL</label>
+				<input type="text" id="recipe-image-url" name="imageUrl" required>
+
+				<label for="recipe-alt-text">Alt Text</label>
+				<input type="text" id="recipe-alt-text" name="altText" required>
+
+				<label for="recipe-ingredients">Ingredients (one item per line)</label>
+				<textarea id="recipe-ingredients" name="ingredients" rows="6" required></textarea>
+
+				<label for="recipe-instructions">Instructions</label>
+				<textarea id="recipe-instructions" name="instructions" rows="8" required></textarea>
+
+				<button type="submit">Save Recipe</button>
+			</form>
+		</section>
+	</main>
+
+	<script src="add-recipe.js"></script>
+</body>
+</html>

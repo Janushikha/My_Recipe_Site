@@ -48,7 +48,7 @@
 			box-shadow: var(--shadow);
 			padding: clamp(1.2rem, 4vw, 2rem);
 			display: flex;
-			align-items: center;
+			align-items: center;  
 			justify-content: space-between;
 			gap: 1rem;
 			animation: rise 650ms ease-out both;
@@ -178,6 +178,25 @@
 			box-shadow: 0 8px 18px rgba(217, 109, 48, 0.35);
 		}
 
+		.nav-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			white-space: nowrap;
+			border-radius: 10px;
+			padding: 0.65rem 0.95rem;
+			font-weight: 700;
+			color: #fff;
+			background: linear-gradient(120deg, var(--accent), var(--accent-2));
+			transition: transform 180ms ease, box-shadow 180ms ease;
+		}
+
+		.nav-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 18px rgba(217, 109, 48, 0.35);
+		}
+
 		.no-results {
 			grid-column: 1 / -1;
 			text-align: center;
@@ -252,6 +271,7 @@
 			line-height: 1.55;
 		}
 
+
 		@keyframes rise {
 			from {
 				opacity: 0;
@@ -272,6 +292,10 @@
 				flex-direction: column;
 				align-items: stretch;
 			}
+
+			.controls {
+				flex-wrap: wrap;
+			}
 		}
 
 		@media (max-width: 560px) {
@@ -290,6 +314,10 @@
 
 			.category-picker select {
 				min-width: 8.5rem;
+			}
+
+			.nav-btn {
+				width: 100%;
 			}
 		}
 	</style>
@@ -314,6 +342,7 @@
 					</select>
 				</div>
 				<input type="text" id="recipeSearch" placeholder="Search by name or ingredients...">
+				<a class="nav-btn" href="add_recipe.html">Add New Recipe</a>
 			</div>
 		</header>
 
