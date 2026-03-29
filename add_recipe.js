@@ -50,7 +50,7 @@ if (recipeForm) {
 		const recipe = {
 			id: `rec-${Date.now()}`,
 			name: (formData.get("name") || "").toString().trim(),
-			category: categories,
+			categories: categories,
 			image: (formData.get("imageUrl") || "").toString().trim(),
 			alt: (formData.get("altText") || "").toString().trim(),
 			ingredients,

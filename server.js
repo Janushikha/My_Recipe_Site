@@ -60,9 +60,9 @@ app.post("/api/recipes", async (req, res) => {
 	try {
 		const recipe = req.body;
 
-		if (!recipe.name || !recipe.category || !recipe.instructions) {
+		if (!recipe.name || !recipe.categories || !recipe.instructions) {
 			return res.status(400).json({
-				error: "Missing required fields: name, category, instructions"
+				error: "Missing required fields: name, categories, instructions"
 			});
 		}
 
