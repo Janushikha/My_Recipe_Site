@@ -42,12 +42,17 @@ if (recipeForm) {
 			.filter((checkbox) => checkbox.checked)
 			.map((checkbox) => checkbox.value);
 
+		if (categories.length === 0) {
+			alert("Please select at least one category.");
+			return;
+		}
+
 		const recipe = {
 			id: `rec-${Date.now()}`,
 			name: (formData.get("name") || "").toString().trim(),
 			category: categories,
-			imageUrl: (formData.get("imageUrl") || "").toString().trim(),
-			altText: (formData.get("altText") || "").toString().trim(),
+			image: (formData.get("imageUrl") || "").toString().trim(),
+			alt: (formData.get("altText") || "").toString().trim(),
 			ingredients,
 			instructions: (formData.get("instructions") || "").toString().trim()
 		};
@@ -62,13 +67,23 @@ if (recipeForm) {
 			});
 
 			if (!response.ok) {
-				throw new Error("Failed to add recipe");
+				const responseText = await response.text();
+				let details = responseText;
+
+				try {
+					const parsed = JSON.parse(responseText);
+					details = parsed.details || parsed.error || responseText;
+				} catch (_error) {
+					// Keep plain text details when response is not JSON.
+				}
+
+				throw new Error(`Failed to add recipe (${response.status}): ${details}`);
 			}
 
 			alert("Recipe Added!");
 			window.location.href = "index.html";
 		} catch (error) {
-			alert("Could not add recipe. Please try again.");
+			alert(`Could not add recipe. ${error.message}`);
 			console.error(error);
 		}
 	});
