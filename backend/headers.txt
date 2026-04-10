@@ -1,10 +1,11 @@
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 404 Not Found
 X-Powered-By: Express
 Access-Control-Allow-Origin: *
-Content-Type: application/json; charset=utf-8
-Content-Length: 73
-ETag: W/"49-OjbMIYYGJ76mmT9bHoLW3SCkR/Q"
-Date: Tue, 07 Apr 2026 15:59:49 GMT
+Content-Security-Policy: default-src 'none'
+X-Content-Type-Options: nosniff
+Content-Type: text/html; charset=utf-8
+Content-Length: 171
+Date: Thu, 09 Apr 2026 09:44:28 GMT
 Connection: keep-alive
 Keep-Alive: timeout=5
 

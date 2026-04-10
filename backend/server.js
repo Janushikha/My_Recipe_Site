@@ -104,6 +104,54 @@ app.post("/api/recipes", async (req, res) => {
 	}
 });
 
+app.delete("/api/recipes/:id", async (req, res) => {
+	const supabaseUrl = process.env.SUPABASE_URL;
+	const supabaseKey = process.env.SUPABASE_KEY;
+
+	if (!supabaseUrl || !supabaseKey) {
+		return res.status(500).json({
+			error: "Missing SUPABASE_URL or SUPABASE_KEY in environment variables",
+			details: "Create backend/.env with SUPABASE_URL and SUPABASE_KEY, then restart the server."
+		});
+	}
+
+	const recipeId = req.params.id;
+	if (!recipeId) {
+		return res.status(400).json({
+			error: "Missing recipe id in request URL"
+		});
+	}
+
+	try {
+		const response = await fetch(
+			`${supabaseUrl}/rest/v1/Recipes?id=eq.${encodeURIComponent(recipeId)}`,
+			{
+				method: "DELETE",
+				headers: {
+					apikey: supabaseKey,
+					Authorization: `Bearer ${supabaseKey}`,
+					Prefer: "return=minimal"
+				}
+			}
+		);
+
+		if (!response.ok) {
+			const errorBody = await response.text();
+			return res.status(response.status).json({
+				error: "Failed to delete recipe from Supabase",
+				details: errorBody
+			});
+		}
+
+		return res.status(204).send();
+	} catch (error) {
+		return res.status(500).json({
+			error: "Unexpected server error while deleting recipe",
+			details: error.message
+		});
+	}
+});
+
 app.listen(PORT, () => {
 	console.log(`Server running on http://localhost:${PORT}`);
 });
