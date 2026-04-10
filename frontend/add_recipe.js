@@ -58,7 +58,7 @@ if (recipeForm) {
 		};
 
 		try {
-			const response = await fetch("http://localhost:3000/api/recipes", {
+			const response = await fetch("http://localhost:3000/api/recipesi", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"

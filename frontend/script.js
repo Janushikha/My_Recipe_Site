@@ -160,11 +160,14 @@ function renderRecipes(recipeList) {
 	const cardsMarkup = recipeList
 		.map(
 			(recipe) => `
-				<article class="recipe-card" data-recipe-name="${recipe.name}">
+				<article class="recipe-card" data-recipe-id="${recipe.id}" data-recipe-name="${recipe.name}">
 					<img src="${recipe.image}" alt="${recipe.alt}">
 					<div class="card-body">
 						<h3>${recipe.name}</h3>
-						<button class="view-btn" type="button">View Recipe</button>
+						<div class="button-row">
+							<button class="view-btn" type="button">View Recipe</button>
+							<button class="delete-btn" type="button" data-recipe-id="${recipe.id}">Delete</button>
+						</div>
 					</div>
 				</article>
 			`
@@ -197,11 +200,49 @@ function hideRecipeModal() {
 	recipeModal.setAttribute("aria-hidden", "true");
 }
 
+async function deleteRecipeById(recipeId) {
+	if (!recipeId) return;
+
+	const confirmation = window.confirm("Are you sure you want to delete this recipe?");
+	if (!confirmation) return;
+
+	try {
+		const response = await fetch(`${API_BASE_URL}/api/recipes/${encodeURIComponent(recipeId)}`, {
+			method: "DELETE"
+		});
+
+		if (!response.ok) {
+			let details = `Failed to delete recipe (${response.status})`;
+			try {
+				const body = await response.json();
+				details = body.details || body.error || details;
+			} catch (_error) {
+				// Keep default details if body is not JSON
+			}
+			throw new Error(details);
+		}
+
+		// Remove from local array and refresh view
+		recipes = recipes.filter((recipe) => recipe.id !== recipeId);
+		handleSearch();
+	} catch (error) {
+		console.error("Failed to delete recipe:", error);
+		window.alert(`Could not delete recipe. ${error.message}`);
+	}
+}
+
 categorySelect.addEventListener("change", handleSearch);
 
 recipeSearch.addEventListener("input", debouncedHandleSearch);
 
 recipesGrid.addEventListener("click", (event) => {
+	const deleteButton = event.target.closest(".delete-btn");
+	if (deleteButton) {
+		const recipeId = deleteButton.getAttribute("data-recipe-id");
+		void deleteRecipeById(recipeId);
+		return;
+	}
+
 	const card = event.target.closest(".recipe-card");
 	if (!card) {
 		return;

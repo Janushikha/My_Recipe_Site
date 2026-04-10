@@ -55,7 +55,7 @@ app.get("/api/recipes", async (req, res) => {
 	}
 });
 
-app.post("/api/recipes", async (req, res) => {    
+app.post("/api/recipesi", async (req, res) => {    
 	const supabaseUrl = process.env.SUPABASE_URL;
 	const supabaseKey = process.env.SUPABASE_KEY;
 
