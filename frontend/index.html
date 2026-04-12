@@ -163,6 +163,7 @@
 		}
 
 		.view-btn,
+		.edit-btn,
 		.delete-btn {
 			border: none;
 			border-radius: 10px;
@@ -176,13 +177,31 @@
 		}
 
 		.button-row {
-			display: flex;
+			display: grid;
+			grid-template-columns: 2fr 1fr;
 			gap: 0.5rem;
 			margin-top: auto;
+			min-height: 5.6rem;
+		}
+
+		.right-actions {
+			display: grid;
+			grid-template-rows: 1fr 1fr;
+			gap: 0.5rem;
 		}
 
 		.view-btn {
 			background: linear-gradient(120deg, var(--accent), var(--accent-2));
+			height: 100%;
+		}
+
+		.right-actions .edit-btn,
+		.right-actions .delete-btn {
+			width: 100%;
+		}
+
+		.edit-btn {
+			background: linear-gradient(120deg, #2f6fb0, #5ca4e8);
 		}
 
 		.delete-btn {

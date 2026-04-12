@@ -166,7 +166,10 @@ function renderRecipes(recipeList) {
 						<h3>${recipe.name}</h3>
 						<div class="button-row">
 							<button class="view-btn" type="button">View Recipe</button>
-							<button class="delete-btn" type="button" data-recipe-id="${recipe.id}">Delete</button>
+							<div class="right-actions">
+								<button class="edit-btn" type="button" data-recipe-id="${recipe.id}">Edit</button>
+								<button class="delete-btn" type="button" data-recipe-id="${recipe.id}">Delete</button>
+							</div>
 						</div>
 					</div>
 				</article>
@@ -236,6 +239,13 @@ categorySelect.addEventListener("change", handleSearch);
 recipeSearch.addEventListener("input", debouncedHandleSearch);
 
 recipesGrid.addEventListener("click", (event) => {
+	const editButton = event.target.closest(".edit-btn");
+	if (editButton) {
+		const recipeId = editButton.getAttribute("data-recipe-id");
+		window.location.href = `add_recipe.html?id=${encodeURIComponent(recipeId)}`;
+		return;
+	}
+
 	const deleteButton = event.target.closest(".delete-btn");
 	if (deleteButton) {
 		const recipeId = deleteButton.getAttribute("data-recipe-id");
