@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Login</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--surface: #fffdf8;
+			--ink: #2d2017;
+			--accent: #d96d30;
+			--accent-2: #ffb347;
+			--border: #f2d9c6;
+			--danger: #b42318;
+			--shadow: 0 12px 28px rgba(91, 50, 22, 0.14);
+			--radius: 18px;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			min-height: 100vh;
+			margin: 0;
+			font-family: "Manrope", sans-serif;
+			color: var(--ink);
+			background:
+				radial-gradient(circle at 15% 20%, #ffd7ab 0%, transparent 35%),
+				radial-gradient(circle at 80% 10%, #ffe8c8 0%, transparent 30%),
+				linear-gradient(135deg, #fff8ef 0%, #fff2df 55%, #ffe9d2 100%);
+			padding: 2rem 1rem;
+			display: grid;
+			place-items: center;
+		}
+
+		main {
+			width: min(440px, 100%);
+		}
+
+		.panel {
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			box-shadow: var(--shadow);
+			padding: 1.2rem;
+		}
+
+		h1 {
+			font-family: "Playfair Display", serif;
+			font-size: clamp(1.4rem, 3.5vw, 2rem);
+			margin: 0 0 0.9rem;
+		}
+
+		p {
+			margin: 0 0 1rem;
+		}
+
+		form {
+			display: grid;
+			gap: 0.7rem;
+		}
+
+		label {
+			font-weight: 700;
+			font-size: 0.92rem;
+		}
+
+		input {
+			font: inherit;
+			color: var(--ink);
+			background: #fff9f0;
+			border: 1px solid #efcfb7;
+			border-radius: 10px;
+			padding: 0.7rem 0.8rem;
+			outline: none;
+		}
+
+		input:focus {
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(217, 109, 48, 0.15);
+		}
+
+		button {
+			margin-top: 0.2rem;
+			border: none;
+			border-radius: 10px;
+			padding: 0.72rem 1.1rem;
+			font: inherit;
+			font-weight: 700;
+			color: #fff;
+			background: linear-gradient(120deg, var(--accent), var(--accent-2));
+			cursor: pointer;
+		}
+
+		button:disabled {
+			opacity: 0.7;
+			cursor: wait;
+		}
+
+		.status {
+			min-height: 1.25rem;
+			font-size: 0.92rem;
+			margin-top: 0.5rem;
+		}
+
+		.status.error {
+			color: var(--danger);
+			font-weight: 600;
+		}
+
+		.status.success {
+			color: #136f2d;
+			font-weight: 600;
+		}
+
+		.back-link {
+			display: inline-block;
+			margin-top: 0.8rem;
+			color: #4d2d1a;
+			font-weight: 700;
+			text-decoration: none;
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<section class="panel" aria-label="Admin login panel">
+			<h1>Admin Login</h1>
+			<p>Sign in to manage recipes.</p>
+			<form id="login-form">
+				<label for="login-email">Email</label>
+				<input id="login-email" name="email" type="email" autocomplete="email" required>
+
+				<label for="login-password">Password</label>
+				<input id="login-password" name="password" type="password" autocomplete="current-password" required>
+
+				<button id="login-submit" type="submit">Log In</button>
+			</form>
+			<p id="login-status" class="status" aria-live="polite"></p>
+			<a class="back-link" href="index.html">Back to Home</a>
+		</section>
+	</main>
+
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script>
+		const SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
+		const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+		window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+	</script>
+	<script src="login.js"></script>
+</body>
+</html>

@@ -8,10 +8,73 @@ dotenv.config({ path: path.join(__dirname, ".env") });
 const app = express();
 const PORT = process.env.PORT || 3000;
 const frontendDir = path.join(__dirname, "..", "frontend");
+const ADMIN_EMAIL = "your-email@example.com";
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(frontendDir));
+
+function getBearerToken(req) {
+	const authHeader = req.headers.authorization || "";
+	if (!authHeader.toLowerCase().startsWith("bearer ")) {
+		return "";
+	}
+	return authHeader.slice(7).trim();
+}
+
+async function requireAdminAuth(req, res, next) {
+	const supabaseUrl = process.env.SUPABASE_URL;
+	const supabaseKey = process.env.SUPABASE_KEY;
+
+	if (!supabaseUrl || !supabaseKey) {
+		return res.status(500).json({
+			error: "Missing SUPABASE_URL or SUPABASE_KEY in environment variables",
+			details: "Create backend/.env with SUPABASE_URL and SUPABASE_KEY, then restart the server."
+		});
+	}
+
+	const token = getBearerToken(req);
+	if (!token) {
+		return res.status(403).json({
+			error: "Forbidden",
+			details: "Missing or invalid Authorization bearer token."
+		});
+	}
+
+	try {
+		const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
+			headers: {
+				apikey: supabaseKey,
+				Authorization: `Bearer ${token}`,
+				Accept: "application/json"
+			}
+		});
+
+		if (!response.ok) {
+			return res.status(403).json({
+				error: "Forbidden",
+				details: "Invalid or expired token."
+			});
+		}
+
+		const user = await response.json();
+		const email = (user && user.email ? user.email : "").toLowerCase();
+		if (email !== ADMIN_EMAIL.toLowerCase()) {
+			return res.status(403).json({
+				error: "Forbidden",
+				details: "You do not have permission to perform this action."
+			});
+		}
+
+		req.authUser = user;
+		return next();
+	} catch (error) {
+		return res.status(500).json({
+			error: "Unexpected server error while validating auth token",
+			details: error.message
+		});
+	}
+}
 
 // app.get("/", (_req, res) => {
 // 	res.sendFile(path.join(frontendDir, "index.html"));
@@ -158,10 +221,10 @@ async function createRecipe(req, res) {
 	}
 }
 
-app.post("/api/recipes", createRecipe);
-app.post("/api/recipesi", createRecipe);
+app.post("/api/recipes", requireAdminAuth, createRecipe);
+app.post("/api/recipesi", requireAdminAuth, createRecipe);
 
-app.put("/api/recipes/:id", async (req, res) => {
+app.put("/api/recipes/:id", requireAdminAuth, async (req, res) => {
 	const supabaseUrl = process.env.SUPABASE_URL;
 	const supabaseKey = process.env.SUPABASE_KEY;
 
@@ -226,7 +289,7 @@ app.put("/api/recipes/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/recipes/:id", async (req, res) => {
+app.delete("/api/recipes/:id", requireAdminAuth, async (req, res) => {
 	const supabaseUrl = process.env.SUPABASE_URL;
 	const supabaseKey = process.env.SUPABASE_KEY;
 

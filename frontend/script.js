@@ -1,4 +1,6 @@
 let recipes = [];
+const ADMIN_EMAIL = "your-email@example.com";
+let isAdminLoggedIn = false;
 const API_BASE_URL =
 	window.location.protocol === "file:" || window.location.port !== "3000"
 		? "http://localhost:3000"
@@ -7,7 +9,7 @@ const API_BASE_URL =
 function normalizeRecipe(row, index) {
 	const normalizedIngredients = Array.isArray(row.ingredients)
 		? row.ingredients
-		: typeof row.ingredients === "string"
+		: typeof row.ingredients === "string"   
 			? row.ingredients.split("\n").map((item) => item.trim()).filter(Boolean)
 			: [];
 
@@ -68,6 +70,48 @@ const closeModalButton = document.getElementById("closeModal");
 const modalTitle = document.getElementById("modalTitle");
 const modalIngredients = document.getElementById("modalIngredients");
 const modalInstructions = document.getElementById("modalInstructions");
+const navActionButton = document.querySelector(".nav-btn");
+
+function updateAdminNav() {
+	if (!navActionButton) return;
+
+	if (isAdminLoggedIn) {
+		navActionButton.textContent = "Admin Dashboard";
+		navActionButton.href = "add_recipe.html";
+	} else {
+		navActionButton.textContent = "Admin Login";
+		navActionButton.href = "login.html";
+	}
+}
+
+async function checkAdminSession() {
+	try {
+		if (!window.supabase || !window.supabase.auth || typeof window.supabase.auth.getSession !== "function") {
+			isAdminLoggedIn = false;
+			updateAdminNav();
+			return;
+		}
+
+		const { data, error } = await window.supabase.auth.getSession();
+		if (error) {
+			console.error("Failed to check auth session:", error);
+			isAdminLoggedIn = false;
+			updateAdminNav();
+			return;
+		}
+
+		const sessionEmail = data && data.session && data.session.user
+			? (data.session.user.email || "")
+			: "";
+
+		isAdminLoggedIn = sessionEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+		updateAdminNav();
+	} catch (error) {
+		console.error("Unexpected session check error:", error);
+		isAdminLoggedIn = false;
+		updateAdminNav();
+	}
+}
 
 function populateCategoryOptions() {
 	if (!categorySelect) return;
@@ -166,10 +210,13 @@ function renderRecipes(recipeList) {
 						<h3>${recipe.name}</h3>
 						<div class="button-row">
 							<button class="view-btn" type="button">View Recipe</button>
-							<div class="right-actions">
-								<button class="edit-btn" type="button" data-recipe-id="${recipe.id}">Edit</button>
-								<button class="delete-btn" type="button" data-recipe-id="${recipe.id}">Delete</button>
-							</div>
+							${isAdminLoggedIn
+								? `<div class="right-actions">
+									<button class="edit-btn" type="button" data-recipe-id="${recipe.id}">Edit</button>
+									<button class="delete-btn" type="button" data-recipe-id="${recipe.id}">Delete</button>
+								</div>`
+								: ""
+							}
 						</div>
 					</div>
 				</article>
@@ -280,4 +327,7 @@ document.addEventListener("keydown", (event) => {
 	}
 });
 
-loadRecipesFromApi();
+void (async function initPage() {
+	await checkAdminSession();
+	await loadRecipesFromApi();
+})();
