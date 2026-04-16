@@ -8,7 +8,7 @@ dotenv.config({ path: path.join(__dirname, ".env") });
 const app = express();
 const PORT = process.env.PORT || 3000;
 const frontendDir = path.join(__dirname, "..", "frontend");
-const ADMIN_EMAIL = "your-email@example.com";
+const ADMIN_EMAIL = "janug0227@gmail.com";
 
 app.use(cors());
 app.use(express.json());
@@ -19,7 +19,11 @@ function getBearerToken(req) {
 	if (!authHeader.toLowerCase().startsWith("bearer ")) {
 		return "";
 	}
-	return authHeader.slice(7).trim();
+	return authHeader.slice(7).trim();   
+}
+
+function getSupabaseCrudKey() {
+	return process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 }
 
 async function requireAdminAuth(req, res, next) {
@@ -174,12 +178,12 @@ app.get("/api/recipes/:id", async (req, res) => {
 
 async function createRecipe(req, res) {
 	const supabaseUrl = process.env.SUPABASE_URL;
-	const supabaseKey = process.env.SUPABASE_KEY;
+	const supabaseKey = getSupabaseCrudKey();
 
 	if (!supabaseUrl || !supabaseKey) {
 		return res.status(500).json({
-			error: "Missing SUPABASE_URL or SUPABASE_KEY in environment variables",
-			details: "Create backend/.env with SUPABASE_URL and SUPABASE_KEY, then restart the server."
+			error: "Missing Supabase configuration for recipe writes",
+			details: "Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in backend/.env, then restart the server."
 		});
 	}
 
@@ -226,12 +230,12 @@ app.post("/api/recipesi", requireAdminAuth, createRecipe);
 
 app.put("/api/recipes/:id", requireAdminAuth, async (req, res) => {
 	const supabaseUrl = process.env.SUPABASE_URL;
-	const supabaseKey = process.env.SUPABASE_KEY;
+	const supabaseKey = getSupabaseCrudKey();
 
 	if (!supabaseUrl || !supabaseKey) {
 		return res.status(500).json({
-			error: "Missing SUPABASE_URL or SUPABASE_KEY in environment variables",
-			details: "Create backend/.env with SUPABASE_URL and SUPABASE_KEY, then restart the server."
+			error: "Missing Supabase configuration for recipe writes",
+			details: "Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in backend/.env, then restart the server."
 		});
 	}
 
@@ -291,12 +295,12 @@ app.put("/api/recipes/:id", requireAdminAuth, async (req, res) => {
 
 app.delete("/api/recipes/:id", requireAdminAuth, async (req, res) => {
 	const supabaseUrl = process.env.SUPABASE_URL;
-	const supabaseKey = process.env.SUPABASE_KEY;
+	const supabaseKey = getSupabaseCrudKey();
 
 	if (!supabaseUrl || !supabaseKey) {
 		return res.status(500).json({
-			error: "Missing SUPABASE_URL or SUPABASE_KEY in environment variables",
-			details: "Create backend/.env with SUPABASE_URL and SUPABASE_KEY, then restart the server."
+			error: "Missing Supabase configuration for recipe writes",
+			details: "Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in backend/.env, then restart the server."
 		});
 	}
 

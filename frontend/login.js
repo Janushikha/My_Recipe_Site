@@ -23,6 +23,9 @@ function getCleanErrorMessage(error) {
 	if (raw.includes("email not confirmed")) {
 		return "Please confirm your email before logging in.";
 	}
+	if (raw.includes("failed to fetch")) {
+		return "Network error while contacting Supabase. Check internet access and Supabase project settings.";
+	}
 	return error.message || "Login failed. Please try again.";
 }
 

@@ -1,5 +1,5 @@
 let recipes = [];
-const ADMIN_EMAIL = "your-email@example.com";
+const ADMIN_EMAIL = "janug0227@gmail.com";
 let isAdminLoggedIn = false;
 const API_BASE_URL =
 	window.location.protocol === "file:" || window.location.port !== "3000"
@@ -72,6 +72,19 @@ const modalIngredients = document.getElementById("modalIngredients");
 const modalInstructions = document.getElementById("modalInstructions");
 const navActionButton = document.querySelector(".nav-btn");
 
+async function getAccessToken() {
+	if (!window.supabaseClient || !window.supabaseClient.auth || typeof window.supabaseClient.auth.getSession !== "function") {
+		return "";
+	}
+
+	const { data, error } = await window.supabaseClient.auth.getSession();
+	if (error) {
+		throw new Error(error.message || "Failed to read Supabase session.");
+	}
+
+	return data && data.session && data.session.access_token ? data.session.access_token : "";
+}
+
 function updateAdminNav() {
 	if (!navActionButton) return;
 
@@ -86,13 +99,13 @@ function updateAdminNav() {
 
 async function checkAdminSession() {
 	try {
-		if (!window.supabase || !window.supabase.auth || typeof window.supabase.auth.getSession !== "function") {
+		if (!window.supabaseClient || !window.supabaseClient.auth || typeof window.supabaseClient.auth.getSession !== "function") {
 			isAdminLoggedIn = false;
 			updateAdminNav();
 			return;
 		}
 
-		const { data, error } = await window.supabase.auth.getSession();
+		const { data, error } = await window.supabaseClient.auth.getSession();
 		if (error) {
 			console.error("Failed to check auth session:", error);
 			isAdminLoggedIn = false;
@@ -208,7 +221,7 @@ function renderRecipes(recipeList) {
 					<img src="${recipe.image}" alt="${recipe.alt}">
 					<div class="card-body">
 						<h3>${recipe.name}</h3>
-						<div class="button-row">
+						<div class="button-row ${isAdminLoggedIn ? "button-row--admin" : "button-row--single"}">
 							<button class="view-btn" type="button">View Recipe</button>
 							${isAdminLoggedIn
 								? `<div class="right-actions">
@@ -256,9 +269,19 @@ async function deleteRecipeById(recipeId) {
 	const confirmation = window.confirm("Are you sure you want to delete this recipe?");
 	if (!confirmation) return;
 
+	const accessToken = await getAccessToken();
+	if (!accessToken) {
+		window.alert("Please log in as admin before deleting a recipe.");
+		window.location.href = "login.html";
+		return;
+	}
+
 	try {
 		const response = await fetch(`${API_BASE_URL}/api/recipes/${encodeURIComponent(recipeId)}`, {
-			method: "DELETE"
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${accessToken}`
+			}
 		});
 
 		if (!response.ok) {

@@ -6,6 +6,19 @@ const submitButton = recipeForm ? recipeForm.querySelector("button[type='submit'
 const API_BASE_URL = "http://localhost:3000";
 const editRecipeId = new URLSearchParams(window.location.search).get("id");
 
+async function getAccessToken() {
+	if (!window.supabaseClient || !window.supabaseClient.auth || typeof window.supabaseClient.auth.getSession !== "function") {
+		return "";
+	}
+
+	const { data, error } = await window.supabaseClient.auth.getSession();
+	if (error) {
+		throw new Error(error.message || "Failed to read Supabase session.");
+	}
+
+	return data && data.session && data.session.access_token ? data.session.access_token : "";
+}
+
 function normalizeIngredientLines(rawIngredients) {
 	return (rawIngredients || "")
 		.toString()
@@ -208,12 +221,20 @@ if (recipeForm) {
 			? `${API_BASE_URL}/api/recipes/${encodeURIComponent(editRecipeId)}`
 			: `${API_BASE_URL}/api/recipes`;
 		const requestMethod = isEditMode ? "PUT" : "POST";
+		const accessToken = await getAccessToken();
+
+		if (!accessToken) {
+			alert("Please log in as admin before saving a recipe.");
+			window.location.href = "login.html";
+			return;
+		}
 
 		try {
 			const response = await fetch(requestUrl, {
 				method: requestMethod,
 				headers: {
-					"Content-Type": "application/json"
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`
 				},
 				body: JSON.stringify(recipe)
 			});

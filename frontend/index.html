@@ -184,6 +184,10 @@
 			min-height: 5.6rem;
 		}
 
+		.button-row--single {
+			grid-template-columns: 1fr;
+		}
+
 		.right-actions {
 			display: grid;
 			grid-template-rows: 1fr 1fr;
@@ -193,6 +197,10 @@
 		.view-btn {
 			background: linear-gradient(120deg, var(--accent), var(--accent-2));
 			height: 100%;
+		}
+
+		.button-row--single .view-btn {
+			width: 100%;
 		}
 
 		.right-actions .edit-btn,
@@ -397,6 +405,8 @@
 			<p class="instructions" id="modalInstructions"></p>
 		</div>
 	</div>
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="supabase-client.js"></script>
 	<script src="script.js"></script>
 </body>
 </html>
